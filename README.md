@@ -2,7 +2,6 @@
 
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
 ![Size](https://img.shields.io/badge/minified-1.23KB-blue)
-![AI](https://img.shields.io/badge/AI-Generated-orange)
 
 Type-safe Web Components with automatic event wiring.
 
