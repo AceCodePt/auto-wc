@@ -6,9 +6,45 @@
 
 Type-safe Web Components with automatic event wiring.
 
-## Installation
+## The Struggle is Real
 
-### Node.js (npm, pnpm, bun)
+"Oh boy! Can't wait setting up listeners again!"
+
+If you've ever written a vanilla Web Component, you know the drill. You create a class, you custom element define it, and then you spend the next 20 minutes writing `addEventListener` in `connectedCallback` and `removeEventListener` in `disconnectedCallback`. It's repetitive, it's error-prone, and quite frankly, it's boring.
+
+**The Old Way (Yawn):**
+```javascript
+class MyButton extends HTMLButtonElement {
+  constructor() {
+    super();
+    this._handleClick = this._handleClick.bind(this);
+  }
+
+  connectedCallback() {
+    this.addEventListener('click', this._handleClick);
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('click', this._handleClick);
+  }
+
+  _handleClick(e) {
+    console.log('Clicked!');
+  }
+}
+customElements.define('my-button', MyButton, { extends: 'button' });
+```
+
+**The auto-wc Way (Magic!):**
+```javascript
+defineAutoWebComponent('my-button', 'button', (Base) => class extends Base {
+  onClick(e) {
+    console.log('Clicked!');
+  }
+});
+```
+
+## Installation
 
 ```bash
 # npm
@@ -21,73 +57,23 @@ pnpm add auto-wc
 bun add auto-wc
 ```
 
-### CDN Usage
-
-You can import `auto-wc` directly from jsDelivr or unpkg without a build step.
-
-#### Standard (ES Modules)
-
-```html
-<script type="module">
-  import { defineAutoWebComponent } from 'https://cdn.jsdelivr.net/npm/auto-wc/+esm';
-</script>
-```
-
-#### Minified (Recommended for Production)
-
-```html
-<!-- unpkg -->
-<script type="module">
-  import { defineAutoWebComponent } from 'https://unpkg.com/auto-wc/dist/index.min.js';
-</script>
-
-<!-- jsDelivr -->
-<script type="module">
-  import { defineAutoWebComponent } from 'https://cdn.jsdelivr.net/npm/auto-wc/dist/index.min.js';
-</script>
-```
-
-Example usage:
+Or use via CDN:
 
 ```html
 <script type="module">
   import { defineAutoWebComponent } from 'https://unpkg.com/auto-wc/dist/index.min.js';
-
-  defineAutoWebComponent('my-button', 'button', (Base) => class extends Base {
-    onClick() {
-      console.log('Clicked!');
-    }
-  });
 </script>
 ```
 
-#### Development (Unminified)
 
-```html
-<!-- jsDelivr -->
-<script type="module">
-  import { defineAutoWebComponent } from 'https://cdn.jsdelivr.net/npm/auto-wc/+esm';
-</script>
+## Features
 
-<!-- unpkg -->
-<script type="module">
-  import { defineAutoWebComponent } from 'https://unpkg.com/auto-wc/dist/index.js';
-</script>
-```
-
-Example usage:
-
-```html
-<script type="module">
-  import { defineAutoWebComponent } from 'https://cdn.jsdelivr.net/npm/auto-wc/+esm';
-
-  defineAutoWebComponent('my-button', 'button', (Base) => class extends Base {
-    onClick() {
-      console.log('Clicked!');
-    }
-  });
-</script>
-```
+- ✅ **Type-safe**: Full TypeScript support for DOM events.
+- ✅ **Automatic Wiring**: Methods starting with `on` (e.g., `onClick`) are automatically bound to events.
+- ✅ **Automatic Registration**: `customElements.define` is called automatically.
+- ✅ **Strict**: Event handler properties are read-only to prevent runtime reassignment.
+- ✅ **Cleanup**: Event listeners are automatically removed on disconnect.
+- ✅ **Zero Dependencies**: Lightweight and fast.
 
 ## Usage
 
@@ -106,17 +92,6 @@ defineAutoWebComponent(
 );
 ```
 
-### CommonJS (require)
-
-If you are using a legacy environment:
-
-```javascript
-const { defineAutoWebComponent } = require("auto-wc");
-
-defineAutoWebComponent("my-button", "button", (Base) => class extends Base {
-  // ...
-});
-```
 
 ### Full Example
 
@@ -160,36 +135,6 @@ Since this library creates **customized built-in elements**, you must use the `i
 <my-button>I will never work!</my-button>
 ```
 
-### Using Import Maps
-
-You can use Import Maps to manage your dependencies cleanly in the browser:
-
-```html
-<script type="importmap">
-  {
-    "imports": {
-      "auto-wc": "https://unpkg.com/auto-wc/dist/index.min.js"
-    }
-  }
-</script>
-
-<script type="module">
-  import { defineAutoWebComponent } from "auto-wc";
-
-  defineAutoWebComponent("my-button", "button", (Base) => class extends Base {
-    // ...
-  });
-</script>
-```
-
-## Features
-
-- ✅ **Type-safe**: Full TypeScript support for DOM events.
-- ✅ **Automatic Wiring**: Methods starting with `on` (e.g., `onClick`) are automatically bound to events.
-- ✅ **Automatic Registration**: `customElements.define` is called automatically.
-- ✅ **Strict**: Event handler properties are read-only to prevent runtime reassignment.
-- ✅ **Cleanup**: Event listeners are automatically removed on disconnect.
-- ✅ **Zero Dependencies**: Lightweight and fast.
 
 ## API
 
