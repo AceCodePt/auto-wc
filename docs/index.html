@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>auto-wc Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            line-height: 1.5;
+        }
+        h1 { margin-bottom: 0.5rem; }
+        .demo-section {
+            border: 1px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            background: #f9f9f9;
+        }
+        button {
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .log {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #eee;
+            border-radius: 4px;
+            font-family: monospace;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>auto-wc</h1>
+    <p>Type-safe Web Components with automatic event wiring.</p>
+
+    <div class="demo-section">
+        <h3>Counter Demo</h3>
+        <p>Click to increment. Double click to reset.</p>
+        
+        <!-- Usage with is="" directive -->
+        <button is="my-counter">Count: 0</button>
+
+        <div id="log" class="log">Event Log:</div>
+    </div>
+
+    <script type="module">
+        // Import from unpkg for the demo
+        import { defineAutoWebComponent } from 'https://unpkg.com/auto-wc/dist/index.min.js';
+
+        const logEl = document.getElementById('log');
+        function log(msg) {
+            logEl.innerHTML = `<div>${new Date().toLocaleTimeString()} - ${msg}</div>` + logEl.innerHTML;
+        }
+
+        // Define the custom element
+        defineAutoWebComponent('my-counter', 'button', (Base) => class extends Base {
+            count = 0;
+
+            constructor() {
+                super();
+                this.updateText();
+            }
+
+            onClick(e) {
+                this.count++;
+                this.updateText();
+                log('Clicked! Count is ' + this.count);
+            }
+
+            onDblClick(e) {
+                this.count = 0;
+                this.updateText();
+                log('Double Clicked! Resetting count.');
+            }
+
+            onMouseEnter() {
+                this.style.backgroundColor = '#e0e0ff';
+            }
+
+            onMouseLeave() {
+                this.style.backgroundColor = '';
+            }
+
+            updateText() {
+                this.textContent = `Count: ${this.count}`;
+            }
+        });
+    </script>
+</body>
+</html>
