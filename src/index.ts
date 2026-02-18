@@ -108,20 +108,36 @@ function getEventName(methodName: string): string {
 /**
  * Mixin that adds auto event wiring to a base class.
  */
-function withAutoEvents<T extends Constructor<HTMLElement>>(Base: T) {
+function withAutoEvents<
+  T extends Constructor<
+    HTMLElement & {
+      connectedCallback?(): void;
+      attributeChangedCallback?(
+        name: string,
+        oldValue: string | null,
+        newValue: string | null,
+      ): void;
+      disconnectedCallback?(): void;
+    }
+  >,
+>(Base: T) {
   // @ts-expect-error - Dynamic class extension
   class AutoElement extends Base implements EventInterceptors {
     private _cleanupFns: Array<() => void> = [];
 
-    connectedCallback() {
-      // @ts-expect-error - super access in mixin
-      if (super.connectedCallback) super.connectedCallback();
+    override connectedCallback() {
+      super.connectedCallback?.();
       this._wireAndLockEvents();
     }
-
-    disconnectedCallback() {
-      // @ts-expect-error - super access in mixin
-      if (super.disconnectedCallback) super.disconnectedCallback();
+    override attributeChangedCallback(
+      name: string,
+      oldValue: string | null,
+      newValue: string | null,
+    ) {
+      super.attributeChangedCallback?.(name, oldValue, newValue);
+    }
+    override disconnectedCallback() {
+      super.disconnectedCallback?.();
       this._unwireEvents();
     }
 
