@@ -136,4 +136,35 @@ describe("defineAutoWebComponent", () => {
     const ElementClass = customElements.get("attr-element");
     expect((ElementClass as any).observedAttributes).toEqual(["foo", "bar"]);
   });
+
+  it("should call attributeChangedCallback when observed attribute changes", () => {
+    const attributeChangedSpy = vi.fn();
+
+    defineAutoWebComponent(
+      "observed-attr-changed-element",
+      "div",
+      (Base) =>
+        class extends Base {
+          attributeChangedCallback(
+            name: string,
+            oldValue: string | null,
+            newValue: string | null,
+          ) {
+            attributeChangedSpy(name, oldValue, newValue);
+          }
+        },
+      { observedAttributes: ["test-attr"] },
+    );
+
+    const element = document.createElement("div", { is: "observed-attr-changed-element" });
+    document.body.appendChild(element);
+
+    element.setAttribute("test-attr", "value1");
+    expect(attributeChangedSpy).toHaveBeenCalledWith("test-attr", null, "value1");
+
+    element.setAttribute("test-attr", "value2");
+    expect(attributeChangedSpy).toHaveBeenCalledWith("test-attr", "value1", "value2");
+
+    document.body.removeChild(element);
+  });
 });
