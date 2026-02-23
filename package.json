@@ -1,6 +1,6 @@
 {
 	"name": "auto-wc",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"description": "Type-safe Web Components with automatic event wiring",
 	"type": "module",
 	"main": "./dist/index.js",
@@ -23,6 +23,8 @@
 		"prepublishOnly": "npm run build"
 	},
 	"keywords": [
+		"auto-event-binding",
+		"auto-wc",
 		"web-components",
 		"typescript",
 		"strict-events",
