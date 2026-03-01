@@ -89,6 +89,12 @@ export interface EventInterceptors {
 
   // Details/Dialog
   onToggle?(e: Event): void;
+
+  onPointerCancel?(e: Event): void;
+  onPointerUp?(e: Event): void;
+  onPointerDown?(e: PointerEvent): void;
+  onPointerMove?(e: PointerEvent): void;
+  onCommand?(e: Event): void;
 }
 
 // --- 3. Internal Logic ---
